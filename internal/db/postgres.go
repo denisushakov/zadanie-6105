@@ -15,7 +15,7 @@ func ConnectDB(cfg *config.Config) (*sql.DB, error) {
 	dsn := cfg.PostgresConn
 	if dsn == "" {
 		dsn = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			cfg.PostgresHost, cfg.PostgresPort, cfg.PostgresUser, cfg.PostgresPass, cfg.PostgresDBName)
+			cfg.PostgresHost, cfg.PostgresPort, cfg.PostgresUser, cfg.PostgresPassword, cfg.PostgresDB)
 	}
 
 	db, err := sql.Open("postgres", dsn)
