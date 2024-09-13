@@ -2,18 +2,31 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
-	"os"
 
+	"git.codenrock.com/avito-testirovanie-na-backend-1270/cnrprod1725731408-team-79536/zadanie-6105.git/config"
 	_ "github.com/lib/pq"
 )
 
-func Connect() (*sql.DB, error) {
-	connStr := os.Getenv("POSTGRES_CONN")
-	db, err := sql.Open("postgres", connStr)
+func ConnectDB(cfg *config.Config) (*sql.DB, error) {
+	var err error
+
+	dsn := cfg.PostgresConn
+	if dsn == "" {
+		dsn = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			cfg.PostgresHost, cfg.PostgresPort, cfg.PostgresUser, cfg.PostgresPass, cfg.PostgresDBName)
+	}
+
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal("Ошибка подключения к базе данных:", err)
 		return nil, err
 	}
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	log.Println("Connected to the database successfully")
 	return db, nil
 }
